@@ -43,7 +43,7 @@ def cargar_contactos(contactos: list):
     """ Carga los contactos iniciales de la agenda desde un fichero
     ...
     """
-    #TODO: Controlar los posibles problemas derivados del uso de ficheros...
+    #TODO: Controlar los posibles problemas derivados del uso de ficheros... -> DONE
     lista_fichero = []
     try:
         with open(RUTA_FICHERO, 'r') as fichero:
@@ -66,6 +66,7 @@ def cargar_contactos(contactos: list):
 
 
 def buscar_contacto(contactos: list, email: str) -> int:
+    #pytest
     pos = None
 
     for num_contacto in range(len(contactos)):
@@ -80,7 +81,7 @@ def eliminar_contacto(contactos: list, email: str):
     ...
     """
     try:
-        #TODO: Crear función buscar_contacto para recuperar la posición de un contacto con un email determinado
+        #TODO: Crear función buscar_contacto para recuperar la posición de un contacto con un email determinado -> DONE
         pos = buscar_contacto(contactos, email)
 
         if pos != None:
@@ -106,19 +107,62 @@ def mostrar_menu():
     print("8. Salir")
 
 
+def pedir_opcion():
+
+    todo_ok = False
+    
+    while not todo_ok:
+        try:
+            opcion = int(input(">> Seleccione una opción: "))
+            if opcion not in OPCIONES_MENU:
+                opcion = -1
+            todo_ok = True    
+        except ValueError:
+            print("Error, por favor introduzca solo números enteros del 1 al 8.")
+
+    return opcion
+
+
+def pedir_nombre_y_apellido() -> list:
+    nombre = input("Introduzca su nombre y primer apellido: ").strip().split(" ")
+
+    while len(nombre) < 2:
+        print("Error")
+        nombre = input("Introduzca su nombre y primer apellido: ").strip().split(" ")
+
+    for elemento in range(len(nombre)):
+        nombre[elemento] = nombre[elemento].capitalize()
+
+    return nombre
+
+
+
+def agregar_contacto(contactos: list):
+    diccionario_datos = {}
+    nombre = pedir_nombre_y_apellido()
+    diccionario_datos["nombre"] = dato[0]
+    diccionario_datos["apellido"] = nombre[-1]
+    diccionario_datos["email"] = dato[2]
+    diccionario_datos["telefonos"] = [dato[i] for i in range(3, len(dato))]
+    contactos.append(diccionario_datos)
+
+
 def agenda(contactos: list):
     """ Ejecuta el menú de la agenda con varias opciones
     ...
     """
     #TODO: Crear un bucle para mostrar el menú y ejecutar las funciones necesarias según la opción seleccionada...
 
-    while opcion != 7:
+    opcion = None
+
+    while opcion != 8:
         mostrar_menu()
         opcion = pedir_opcion()
 
         #TODO: Se valorará que utilices la diferencia simétrica de conjuntos para comprobar que la opción es un número entero del 1 al 6
-        if opcion in ?:
-
+        if opcion in OPCIONES_MENU - {8}:
+            lista_funciones = [agregar_contacto(), modificar_contacto(), eliminar_contacto(), vaciar_agenda(), cargar_contactos(contactos), mostrar_contactos(), mostrar_agenda()]
+            lista_funciones[opcion - 1]
 
 
 def pulse_tecla_para_continuar():
@@ -133,7 +177,7 @@ def main():
     """
     borrar_consola()
 
-    #TODO: Asignar una estructura de datos vacía para trabajar con la agenda
+    #TODO: Asignar una estructura de datos vacía para trabajar con la agenda -> DONE
     contactos = []
 
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
