@@ -25,8 +25,8 @@ NOMBRE_FICHERO = 'contactos.csv'
 
 RUTA_FICHERO = path.join(RUTA, NOMBRE_FICHERO)
 
-#TODO: Crear un conjunto con las posibles opciones del menú de la agenda
-OPCIONES_MENU = ?
+#TODO: Crear un conjunto con las posibles opciones del menú de la agenda -> DONE
+OPCIONES_MENU = {1, 2, 3, 4, 5, 6, 7, 8}
 #TODO: Utiliza este conjunto en las funciones agenda() y pedir_opcion()
 
 
@@ -44,18 +44,44 @@ def cargar_contactos(contactos: list):
     ...
     """
     #TODO: Controlar los posibles problemas derivados del uso de ficheros...
+    lista_fichero = []
+    try:
+        with open(RUTA_FICHERO, 'r') as fichero:
+                for linea in fichero:
+                    lista_fichero.append(linea.strip().split("\n"))
+        for i in range(len(lista_fichero)):
+            lista_fichero[i] = lista_fichero[i][0].split(";")
+    except Exception:
+        print("El fichero dado no existe.")
 
-    with open(RUTA_FICHERO, 'r') as fichero:
-        for linea in fichero:
-            print(linea)
+    for dato in lista_fichero:
+        diccionario_datos = {}
+        diccionario_datos["nombre"] = dato[0]
+        diccionario_datos["apellido"] = dato[1]
+        diccionario_datos["email"] = dato[2]
+        diccionario_datos["telefonos"] = [dato[i] for i in range(3, len(dato))]
+        contactos.append(diccionario_datos)
+
+    return contactos
 
 
+def buscar_contacto(contactos: list, email: str) -> int:
+    pos = None
+
+    for num_contacto in range(len(contactos)):
+        if contactos[num_contacto]["email"] == email:
+            pos = num_contacto
+    
+    return pos
+
+    
 def eliminar_contacto(contactos: list, email: str):
     """ Elimina un contacto de la agenda
     ...
     """
     try:
         #TODO: Crear función buscar_contacto para recuperar la posición de un contacto con un email determinado
+        pos = buscar_contacto(contactos, email)
 
         if pos != None:
             del contactos[pos]
@@ -65,6 +91,19 @@ def eliminar_contacto(contactos: list, email: str):
     except Exception as e:
         print(f"**Error** {e}")
         print("No se eliminó ningún contacto")
+
+
+def mostrar_menu():
+    print("AGENDA")
+    print("------")
+    print("1. Nuevo contacto")
+    print("2. Modificar contacto")
+    print("3. Eliminar contacto")
+    print("4. Vaciar agenda")
+    print("5. Cargar agenda inicial")
+    print("6. Mostrar contactos por criterio")
+    print("7. Mostrar la agenda completa")
+    print("8. Salir")
 
 
 def agenda(contactos: list):
@@ -95,11 +134,11 @@ def main():
     borrar_consola()
 
     #TODO: Asignar una estructura de datos vacía para trabajar con la agenda
-    contactos = ?
+    contactos = []
 
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
     #TODO: Realizar una llamada a la función cargar_contacto con todo lo necesario para que funcione correctamente.
-    cargar_contactos(?)
+    cargar_contactos(contactos)
 
     #TODO: Crear función para agregar un contacto. Debes tener en cuenta lo siguiente:
     # - El nombre y apellido no pueden ser una cadena vacía o solo espacios y se guardarán con la primera letra mayúscula y el resto minúsculas (ojo a los nombre compuestos)
