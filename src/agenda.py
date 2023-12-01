@@ -42,8 +42,10 @@ def borrar_consola():
 
 
 def cargar_contactos(contactos: list):
-    """ Carga los contactos iniciales de la agenda desde un fichero
-    ...
+    """ Carga los contactos iniciales de la agenda desde un fichero.
+
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto.   
     """
     #TODO: Controlar los posibles problemas derivados del uso de ficheros... -> DONE
     lista_fichero = []
@@ -56,19 +58,37 @@ def cargar_contactos(contactos: list):
     except Exception:
         print("El fichero dado no existe.")
 
+    errores = []
+
     for dato in lista_fichero:
         diccionario_datos = {}
         diccionario_datos["nombre"] = dato[0]
         diccionario_datos["apellido"] = dato[1]
         diccionario_datos["email"] = dato[2]
         diccionario_datos["telefonos"] = [dato[i] for i in range(3, len(dato))]
-        contactos.append(diccionario_datos)
 
-    return contactos
+        pos_contacto = buscar_contacto(contactos, dato[2])
+        if pos_contacto == None:
+            contactos.append(diccionario_datos)
+        else:
+            errores.append(dato[2])
+    
+    if len(errores) > 0:
+        for email in errores:
+            print(f"Error, debido a la previa existencia de un contacto con el email ({email}) en la agenda no se ha cargado el contacto inicial asociado a ese email.")
 
 
 def buscar_contacto(contactos: list, email: str) -> int:
-    #pytest
+    """Recibe una lista de contactos y un email y devuelve la posición en la lista del email o None si no está en la lista.
+
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto.
+        email (str): string del email que se quiere buscar.
+
+    Returns:
+        int: posición en la lista contactos del diccionario que contiene el email, retorna None si no se encuentra el email en ningún diccionario.
+    """
+
     pos = None
 
     for num_contacto in range(len(contactos)):
@@ -79,8 +99,11 @@ def buscar_contacto(contactos: list, email: str) -> int:
 
     
 def eliminar_contacto(contactos: list, email: str):
-    """ Elimina un contacto de la agenda
-    ...
+    """Elimina un contacto de la agenda si se encuentra en la agenda, de lo contrario muestra un error por pantalla.
+
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto.
+        email (str): string del email que se quiere buscar.
     """
     try:
         #TODO: Crear función buscar_contacto para recuperar la posición de un contacto con un email determinado -> DONE
@@ -97,6 +120,8 @@ def eliminar_contacto(contactos: list, email: str):
 
 
 def mostrar_menu():
+    """Muestra el menu de la agenda por pantalla.
+    """
     print("AGENDA")
     print("------")
     print("1. Nuevo contacto")
@@ -110,6 +135,11 @@ def mostrar_menu():
 
 
 def pedir_opcion():
+    """Pide un número al usuario y lo devuelve, si el valor introducido no esta en el rango 1 a 8 o no es un número devuelve -1
+
+    Returns:
+        opcion (int): número introducido por el usuario si esta en el rango 1 a 8 o -1 s no lo está.
+    """
 
     try:
         opcion = int(input(">> Seleccione una opción: "))
@@ -121,8 +151,16 @@ def pedir_opcion():
     return opcion
 
 
-def pedir_nombre_y_apellido() -> list:
-    #pytest
+def pedir_nombre_y_apellido() -> tuple:
+    """Pide al usuario un nombre y apellido.
+
+    Raises:
+        Exception: levantada si no se introduce al menos 1 nombre y apellido
+
+    Returns:
+        list: tupla con los valores del nombre y apellido en las posiciones [0] y [1] respectivamente
+    """
+
     nombre = input("Introduzca su nombre y primer apellido: ").strip().split(" ")
 
     if len(nombre) < 2:
@@ -134,7 +172,15 @@ def pedir_nombre_y_apellido() -> list:
 
 
 def separar_nombre_y_apellido(nombre: list):
-    #pytest
+    """Recibe una lista con varios valores string y los une todos salvo el ultimo en una string nombre, devuelve una tupla con la string nombre y apellido (la última string de la lista recibida).
+
+    Args:
+        nombre (list): lista con varios valores string que representan el/los nombres del contacto y su primer apellido
+
+    Returns:
+        _type_: una tupla con la string nombre(unión de todos los valores de la lista nombre menos el último) y apellido (la última string de la lista nombre)
+    """
+
     for elemento in range(len(nombre)):
         nombre[elemento] = nombre[elemento].capitalize()
 
@@ -145,8 +191,21 @@ def separar_nombre_y_apellido(nombre: list):
     return nombre, apellido
 
 
-def validar_email(email: str, contactos: list, buscar_en_lista: bool):
-    #No funciona
+def validar_email(email: str, contactos: list, buscar_en_lista: bool) -> str:
+    """Levanta una excepción ValueError si la string email dada no cumple con los requisitos
+
+    Args:
+        email (str): string del email que se quiere comprobar.
+        contactos (list): lista de diccionarios con los datos de cada contacto.
+        buscar_en_lista (bool): valor booleano que nos dice si comprobaremos la existencia del email en contactos o no
+
+    Raises:
+        ValueError: excepción levantada si la string email no cumple los requisitos
+
+    Returns:
+        email (str): string email ya validada
+    """
+
     if len(email.strip()) == 0:
         raise ValueError("el email no puede ser una cadena vacía")
 
@@ -162,7 +221,16 @@ def validar_email(email: str, contactos: list, buscar_en_lista: bool):
 
 
 def pedir_email(contactos: list, buscar_en_lista: bool) -> str:
-    #No funciona
+    """Pide una string email y la valida.
+
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto.
+        buscar_en_lista (bool): valor booleano que nos dice si comprobaremos la existencia del email en contactos o no
+
+    Returns:
+        email (str): string email ya validada
+    """
+
     email = input("Ingrese su correo: ").lower().strip()
 
     email = validar_email(email, contactos, buscar_en_lista)
@@ -171,6 +239,14 @@ def pedir_email(contactos: list, buscar_en_lista: bool) -> str:
 
 
 def validar_telefono(telefono: str) -> bool:
+    """Comprueba si la string telefono cumple los requisitos
+
+    Args:
+        telefono (str): string del telefono que queremos
+
+    Returns:
+        bool: valor booleano que nos dice si el telefono dado es valido o no.
+    """
     
     telefono = telefono.replace(" ", "")
 
@@ -182,7 +258,15 @@ def validar_telefono(telefono: str) -> bool:
         return False
 
 
-def pedir_telefono():
+def pedir_telefono() -> str:
+    """Pide una string telefono y la valida.
+
+    Raises:
+        Exception: excepción levantada si el telefono dado no es válido.
+
+    Returns:
+        telefono (str): string del telefono ya validado.
+    """
 
     telefono = input()
 
@@ -196,6 +280,12 @@ def pedir_telefono():
         
 
 def agregar_contacto(contactos: list):
+    """Pide los datos de un contacto y los agrega al diccionario como un nuevo contacto, si durante el proceso se levanta una excepcion no hace nada.
+
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto
+    """
+
     try:
         diccionario_datos = {}
         diccionario_datos["nombre"], diccionario_datos["apellido"] = pedir_nombre_y_apellido()
@@ -221,12 +311,28 @@ def agregar_contacto(contactos: list):
         print("Error, no se agregó ningún contacto.")
 
 
-def vaciar_agenda(contactos: list):
+def vaciar_agenda(contactos: list) -> list:
+    """Toma la lista de contactos y elimina todos los contactos de ella.
+
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto
+
+    Returns:
+        contactos (list): lista vacia
+    """
+
     contactos = []
+
     return contactos
 
 
 def mostrar_menu_limitado(msj: str):
+    """Muestra un menu de opciones con un mensaje dado por el usuario.
+
+    Args:
+        msj (str): mensaje introducido por el usuario que se muestra por pantalla
+    """
+
     print("------")
     print(f"1. {msj} nombre")
     print(f"2. {msj} apellido")
@@ -235,23 +341,34 @@ def mostrar_menu_limitado(msj: str):
     print(f"5. Salir")
 
 
-def pedir_opcion_limitado():
+def pedir_opcion_limitado() -> int:
+    """Pide una opcion de rango 1 a 5 y levanta un error si no se introduce un número.
 
-    todo_ok = False
-    
-    while not todo_ok:
-        try:
-            opcion = int(input(">> Seleccione una opción: "))
-            if opcion not in OPCIONES_MENU - {6, 7, 8}:
-                opcion = -1
-            todo_ok = True    
-        except ValueError:
-            print("Error, por favor introduzca solo números enteros del 1 al 5.")
+    Returns:
+        opcion (int): valor de la opcion introducida
+    """
+
+    try:
+        opcion = int(input(">> Seleccione una opción: "))
+        if opcion not in OPCIONES_MENU - {6, 7, 8}:
+            opcion = -1
+            
+    except ValueError:
+        print("Error, por favor introduzca solo números enteros del 1 al 5.")
 
     return opcion
 
 
 def modificar_contacto(contactos: list):
+    """Muestra al usuario un menu con opciones y le pide que leija una, despues ejecuta dicha opción.
+
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto
+
+    Raises:
+        ValueError: excepción levantada al introducir un valor no valido en alguno de los inputs de la función
+    """
+
     borrar_consola()
     contactos_temporal = copy.deepcopy(contactos)
     try:
@@ -291,7 +408,7 @@ def modificar_contacto(contactos: list):
                     else:
                         raise ValueError("Error, el correo introducido ya esta en la agenda.")
                     pulse_tecla_para_continuar()
-                else:
+                elif opcion == 4:
                     lista_telefonos = []
                     todo_ok = False
                     contador_telefono = 0
@@ -305,6 +422,8 @@ def modificar_contacto(contactos: list):
                             lista_telefonos.append(telefono)
                             contador_telefono += 1
                     contactos[pos_contacto]["telefonos"] = lista_telefonos
+                elif opcion == -1:
+                    print("Error, ese valor no coincide con ninguna de las opciones permitidas.")
 
     except Exception as e:
         print(e)
@@ -313,6 +432,15 @@ def modificar_contacto(contactos: list):
 
 
 def crear_lista_telefonos_formato(lista_telefonos_original: list) -> list:
+    """Toma la lista de telefonos de un contacto e introduce un guión entre el prefijo de país del telefono y el telefono si es que lo tiene
+
+    Args:
+        lista_telefonos_original (list): lista con todos los telefonos del usuario sin guión entre los prefijos y los telefonos
+
+    Returns:
+        lista_telefonos_formato (list): lista con todos los telefonos del usuario con guión entre los prefijos y los telefonos
+    """
+
     lista_telefonos_formato = []
 
     for num_elemento in range(len(lista_telefonos_original)):
@@ -325,17 +453,36 @@ def crear_lista_telefonos_formato(lista_telefonos_original: list) -> list:
 
 
 def buscar_contacto_por_criterio(contactos: list, criterio: str, valor: str) -> list:
-    #pytest
-    pos = []
+    """Dada una clave de los diccionarios de datos busca el valor dado dentro de dicha clave en la lista de diccionarios
+
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto
+        criterio (str): clave de los diccionarios de datos
+        valor (str): valor a buscar
+
+    Returns:
+        lista_pos (list): todas las posiciones donde se ha encontrado el valor a buscar
+    """
+
+    lista_pos = []
 
     for num_contacto in range(len(contactos)):
         if valor in contactos[num_contacto][criterio]:
-            pos.append(num_contacto)
+            lista_pos.append(num_contacto)
     
-    return pos
+    return lista_pos
 
 
 def mostrar_contacto(contactos: list):
+    """Pide un criterio de busqueda y muestra todos los contactos que coincidan con el criterio de bsuqueda 
+
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto
+
+    Raises:
+        ValueError: excepción levantada al introducir un valor no valido en alguno de los inputs de la función 
+    """
+
     borrar_consola()
     try:
         mostrar_menu_limitado("Buscar por")
@@ -376,7 +523,7 @@ def mostrar_contacto(contactos: list):
                         print(f"Nombre: {contactos[posicion]['nombre']} {contactos[posicion]['apellido']} ({contactos[posicion]['email']})")
                         print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[posicion]['telefonos']))}")
 
-            else:
+            elif opcion == 4:
                 telefono = input("Introduzca un telefono: ").lower()
 
                 lista_pos_contacto = buscar_contacto_por_criterio(contactos, "telefonos", telefono)
@@ -394,6 +541,11 @@ def mostrar_contacto(contactos: list):
 
 
 def mostrar_contactos(contactos: list):
+    """Muestra todos los contactos de la agenda por pantalla
+
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto
+    """
 
     lista_nombres = []
 
@@ -414,7 +566,8 @@ def mostrar_contactos(contactos: list):
 
 def agenda(contactos: list):
     """ Ejecuta el menú de la agenda con varias opciones
-    ...
+    Args:
+        contactos (list): lista de diccionarios con los datos de cada contacto
     """
     #TODO: Crear un bucle para mostrar el menú y ejecutar las funciones necesarias según la opción seleccionada...
 
@@ -448,6 +601,10 @@ def agenda(contactos: list):
             else: 
                 mostrar_contactos(contactos)
                 pulse_tecla_para_continuar()
+        elif opcion == -1:
+            print("Error, el valor introducido no corresponde con ninguna opcion.")
+            pulse_tecla_para_continuar()
+            
 
 
 def pulse_tecla_para_continuar():
