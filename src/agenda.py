@@ -111,16 +111,12 @@ def mostrar_menu():
 
 def pedir_opcion():
 
-    todo_ok = False
-    
-    while not todo_ok:
-        try:
-            opcion = int(input(">> Seleccione una opción: "))
-            if opcion not in OPCIONES_MENU:
-                opcion = -1
-            todo_ok = True    
-        except ValueError:
-            print("Error, por favor introduzca solo números enteros del 1 al 8.")
+    try:
+        opcion = int(input(">> Seleccione una opción: "))
+        if 1 > opcion or 8 < opcion :
+            opcion = -1    
+    except ValueError:
+        opcion = -1
 
     return opcion
 
@@ -180,7 +176,7 @@ def validar_telefono(telefono: str) -> bool:
 
     if len(telefono) == 9 and telefono.isdecimal():
         return True
-    elif len(telefono) == 12 and telefono[0] == "+" and telefono[1:].isdecimal():
+    elif len(telefono) == 12 and telefono[:3] == "+34" and telefono[1:].isdecimal():
         return True
     else:
         return False
