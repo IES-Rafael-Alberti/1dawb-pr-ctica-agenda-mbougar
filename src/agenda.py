@@ -500,7 +500,10 @@ def mostrar_contacto(contactos: list):
                     for posicion in lista_pos_contacto:
                         print("------")
                         print(f"Nombre: {contactos[posicion]['nombre']} {contactos[posicion]['apellido']} ({contactos[posicion]['email']})")
-                        print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[posicion]['telefonos']))}")
+                        if len(contactos[posicion]['telefonos']) == 0:
+                            print("Teléfonos: nignuno")
+                        else:
+                            print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[contacto]['telefonos']))}")
 
             elif opcion == 2: 
                 apellido = input("Introduzca un apellido: ").replace(" ", "").capitalize()
@@ -511,7 +514,10 @@ def mostrar_contacto(contactos: list):
                     for posicion in lista_pos_contacto:
                         print("------")
                         print(f"Nombre: {contactos[posicion]['nombre']} {contactos[posicion]['apellido']} ({contactos[posicion]['email']})")
-                        print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[posicion]['telefonos']))}")
+                        if len(contactos[posicion]['telefonos']) == 0:
+                            print("Teléfonos: nignuno")
+                        else:
+                            print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[contacto]['telefonos']))}")
 
             elif opcion == 3: 
                 email = input("Introduzca un email: ").lower()
@@ -522,7 +528,10 @@ def mostrar_contacto(contactos: list):
                     for posicion in lista_pos_contacto:
                         print("------")
                         print(f"Nombre: {contactos[posicion]['nombre']} {contactos[posicion]['apellido']} ({contactos[posicion]['email']})")
-                        print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[posicion]['telefonos']))}")
+                        if len(contactos[posicion]['telefonos']) == 0:
+                            print("Teléfonos: nignuno")
+                        else:
+                            print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[contacto]['telefonos']))}")
 
             elif opcion == 4:
                 telefono = input("Introduzca un telefono: ").lower()
@@ -533,7 +542,10 @@ def mostrar_contacto(contactos: list):
                     for posicion in lista_pos_contacto:
                         print("------")
                         print(f"Nombre: {contactos[posicion]['nombre']} {contactos[posicion]['apellido']} ({contactos[posicion]['email']})")
-                        print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[posicion]['telefonos']))}")
+                        if len(contactos[posicion]['telefonos']) == 0:
+                            print("Teléfonos: nignuno")
+                        else:
+                            print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[contacto]['telefonos']))}")
 
 
     except Exception as e:
@@ -561,7 +573,10 @@ def mostrar_contactos(contactos: list):
             if nombre == contactos[contacto]["nombre"]:
                 print("------")
                 print(f"Nombre: {contactos[contacto]['nombre']} {contactos[contacto]['apellido']} ({contactos[contacto]['email']})")
-                print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[contacto]['telefonos']))}")
+                if len(contactos[contacto]['telefonos']) == 0:
+                    print("Teléfonos: nignuno")
+                else:
+                    print(f"Teléfonos: {' / '.join(crear_lista_telefonos_formato(contactos[contacto]['telefonos']))}")
     print("------")
 
 
