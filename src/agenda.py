@@ -171,14 +171,14 @@ def pedir_nombre_y_apellido() -> tuple:
     return nombre, apellido
 
 
-def separar_nombre_y_apellido(nombre: list):
+def separar_nombre_y_apellido(nombre: list) -> str:
     """Recibe una lista con varios valores string y los une todos salvo el ultimo en una string nombre, devuelve una tupla con la string nombre y apellido (la última string de la lista recibida).
 
     Args:
         nombre (list): lista con varios valores string que representan el/los nombres del contacto y su primer apellido
 
     Returns:
-        _type_: una tupla con la string nombre(unión de todos los valores de la lista nombre menos el último) y apellido (la última string de la lista nombre)
+        list: una lista con la string nombre(unión de todos los valores de la lista nombre menos el último) y apellido (la última string de la lista nombre)
     """
 
     for elemento in range(len(nombre)):
@@ -354,6 +354,7 @@ def pedir_opcion_limitado() -> int:
             opcion = -1
             
     except ValueError:
+        opcion = -1
         print("Error, por favor introduzca solo números enteros del 1 al 5.")
 
     return opcion
